@@ -15,9 +15,7 @@ import {ERC4626VaultWrapperFactory} from "src/ERC4626VaultWrapperFactory.sol";
 /// @author VII Finance
 contract YieldHarvestingHook is BaseHook {
     using StateLibrary for IPoolManager;
-
     address public immutable erc4626VaultWrapperFactory;
-
     error NotFactory();
 
     constructor(address _owner, IPoolManager _manager) BaseHook(_manager) {
@@ -39,7 +37,6 @@ contract YieldHarvestingHook is BaseHook {
                     _currencyToVaultWrapper(poolKey.currency0).harvest(address(poolManager));
                     poolManager.settle();
                 }
-
                 if (yield1 != 0) {
                     poolManager.sync(poolKey.currency1);
                     _currencyToVaultWrapper(poolKey.currency1).harvest(address(poolManager));
@@ -47,7 +44,6 @@ contract YieldHarvestingHook is BaseHook {
                 }
             }
         }
-
         _;
     }
 
