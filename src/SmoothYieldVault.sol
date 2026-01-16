@@ -20,7 +20,6 @@ contract SmoothYieldVault is Ownable, ERC4626 {
     uint256 public lastSyncedTime;
     /// @notice Period over which yield is smoothed (in seconds)
     uint256 public smoothingPeriod;
-
     uint256 public remainingPeriod;
 
     event SmoothingPeriodUpdated(uint256 newSmoothingPeriod);
@@ -55,8 +54,7 @@ contract SmoothYieldVault is Ownable, ERC4626 {
     ///   * 2 periods passed: 2/3 of profit available immediately, 1/3 smoothed over next period
     ///   * n periods passed: n/(n+1) of profit available immediately, 1/(n+1) smoothed over next period
     /// - The assumption is that syncs will happen multiple times within a smoothing period under normal usage
-    ///   this logic still handles the case where that does not happen and it is expected that there will be spikes
-    ///   in profit distribution in those cases.
+    ///   this logic still handles the case where that does not happen and it is expected that there will be spikes in profit distribution in those cases.
     function _smoothedProfit() internal view returns (uint256 smoothedProfit, uint256 newRemainingPeriod) {
         uint256 timeElapsed = block.timestamp - lastSyncedTime;
         // when timeElapsed is 0, it is expected that this is a no-op call
