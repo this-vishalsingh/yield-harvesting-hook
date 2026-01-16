@@ -55,11 +55,9 @@ contract ERC4626VaultWrapperFactory is Ownable {
     }
 
     /**
-     * @notice If someone front-runs the creation of the pool before user, user function call fails and that frontrunner can
-     * set the initial price to whatever they want.
+     * @notice If someone front-runs the creation of the pool before user, user function call fails and that frontrunner can set the initial price to whatever they want.
      * 1. If you are doing things atomically always make sure the pool is not already initialized before making the create call.
-     * 2. Before adding liquidity always make sure the price of the pool is the right price and if not conduct the arbitrage
-     * to bring the price to the right price.
+     * 2. Before adding liquidity always make sure the price of the pool is the right price and if not conduct the arbitrage to bring the price to the right price.
      */
     function createERC4626VaultPool(
         IERC4626 underlyingVaultA,
@@ -83,7 +81,6 @@ contract ERC4626VaultWrapperFactory is Ownable {
                 _generateSalt(address(underlyingVaultB), address(underlyingVaultA), fee, tickSpacing)
             )
         );
-
         _initializePool(address(vaultWrapperA), address(vaultWrapperB), fee, tickSpacing, sqrtPriceX96);
     }
 
@@ -101,7 +98,6 @@ contract ERC4626VaultWrapperFactory is Ownable {
                 _generateSalt(address(underlyingVaultA), assetB, fee, tickSpacing)
             )
         );
-
         _initializePool(address(vaultWrapper), assetB, fee, tickSpacing, sqrtPriceX96);
     }
 
@@ -117,7 +113,6 @@ contract ERC4626VaultWrapperFactory is Ownable {
                 aaveWrapperImplementation, aToken, _generateSalt(aToken, address(underlyingVault), fee, tickSpacing)
             )
         );
-
         vaultWrapper = ERC4626VaultWrapper(
             _deployVaultWrapper(
                 vaultWrapperImplementation,
@@ -125,7 +120,6 @@ contract ERC4626VaultWrapperFactory is Ownable {
                 _generateSalt(address(underlyingVault), aToken, fee, tickSpacing)
             )
         );
-
         _initializePool(address(aaveWrapper), address(vaultWrapper), fee, tickSpacing, sqrtPriceX96);
     }
 
@@ -136,7 +130,6 @@ contract ERC4626VaultWrapperFactory is Ownable {
         aaveWrapper = AaveWrapper(
             _deployVaultWrapper(aaveWrapperImplementation, aToken, _generateSalt(aToken, asset, fee, tickSpacing))
         );
-
         _initializePool(address(aaveWrapper), asset, fee, tickSpacing, sqrtPriceX96);
     }
 
@@ -147,11 +140,9 @@ contract ERC4626VaultWrapperFactory is Ownable {
         aaveWrapperA = AaveWrapper(
             _deployVaultWrapper(aaveWrapperImplementation, aTokenA, _generateSalt(aTokenA, aTokenB, fee, tickSpacing))
         );
-
         aaveWrapperB = AaveWrapper(
             _deployVaultWrapper(aaveWrapperImplementation, aTokenB, _generateSalt(aTokenB, aTokenA, fee, tickSpacing))
         );
-
         _initializePool(address(aaveWrapperA), address(aaveWrapperB), fee, tickSpacing, sqrtPriceX96);
     }
 
@@ -171,7 +162,6 @@ contract ERC4626VaultWrapperFactory is Ownable {
         address wrapperB = _predictVaultWrapperAddress(
             vaultWrapperImplementation, address(underlyingVaultB), address(underlyingVaultA), fee, tickSpacing
         );
-
         return _buildPoolKey(wrapperA, wrapperB, fee, tickSpacing);
     }
 
@@ -182,7 +172,6 @@ contract ERC4626VaultWrapperFactory is Ownable {
     {
         address wrapper =
             _predictVaultWrapperAddress(vaultWrapperImplementation, address(underlyingVault), token, fee, tickSpacing);
-
         return _buildPoolKey(wrapper, token, fee, tickSpacing);
     }
 
@@ -195,7 +184,6 @@ contract ERC4626VaultWrapperFactory is Ownable {
             _predictVaultWrapperAddress(aaveWrapperImplementation, aToken, address(underlyingVault), fee, tickSpacing);
         address vaultWrapper =
             _predictVaultWrapperAddress(vaultWrapperImplementation, address(underlyingVault), aToken, fee, tickSpacing);
-
         return _buildPoolKey(aaveWrapper, vaultWrapper, fee, tickSpacing);
     }
 
@@ -205,7 +193,6 @@ contract ERC4626VaultWrapperFactory is Ownable {
         returns (PoolKey memory poolKey)
     {
         address aaveWrapper = _predictVaultWrapperAddress(aaveWrapperImplementation, aToken, token, fee, tickSpacing);
-
         return _buildPoolKey(aaveWrapper, token, fee, tickSpacing);
     }
 
@@ -231,7 +218,6 @@ contract ERC4626VaultWrapperFactory is Ownable {
     ) internal view returns (address wrapperAddress) {
         bytes32 salt = _generateSalt(vault, otherToken, fee, tickSpacing);
         bytes memory immutableArgs = abi.encodePacked(address(this), yieldHarvestingHook, vault);
-
         return LibClone.predictDeterministicAddress(implementation, immutableArgs, salt, address(this));
     }
 
@@ -241,7 +227,6 @@ contract ERC4626VaultWrapperFactory is Ownable {
         returns (PoolKey memory poolKey)
     {
         (address currency0, address currency1) = tokenA < tokenB ? (tokenA, tokenB) : (tokenB, tokenA);
-
         return PoolKey({
             currency0: Currency.wrap(currency0),
             currency1: Currency.wrap(currency1),
